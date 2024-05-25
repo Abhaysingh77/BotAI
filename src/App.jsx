@@ -1,7 +1,11 @@
+import { StyledEngineProvider } from "@mui/material/styles";
+import BotAiWindow from "./components/BotAiWindow/BotAiWindow";
 function App() {
   return (
-    <div>BotAI</div>
-  )
+    <StyledEngineProvider injectFirst>
+      <BotAiWindow />
+    </StyledEngineProvider>
+  );
 }
 
-export default App
+export default App;
