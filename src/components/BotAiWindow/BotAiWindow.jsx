@@ -127,7 +127,7 @@ function BotAiWindow(props) {
         >
           New chat
         </div>
-        <TbEdit size={25} cursor="pointer" />
+        <TbEdit size={25} cursor="pointer" onClick={handleSave}/>
       </Toolbar>
       <Divider />
       <div className={Style.past}>
@@ -175,7 +175,7 @@ function BotAiWindow(props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{color:"#9785BA"}}/>
           </IconButton>
           <Typography
             variant="h6"
