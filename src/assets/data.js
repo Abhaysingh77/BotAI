@@ -248,5 +248,15 @@ export const data = [
       "id": 50,
       "question": "How do you stay updated with the latest technology trends?",
       "response": "Staying updated involves following industry news, participating in developer communities, attending conferences and workshops, taking online courses, reading technical blogs and publications, and experimenting with new technologies and tools."
-    }
+    },
+    {
+      "id": 51,
+      "question": "Hi",
+      "response": "Hi! How can I help you?"
+    },
+    {
+      "id": 52,
+      "question": "Hello",
+      "response": "Hello! How can I help you?"
+    },
   ]

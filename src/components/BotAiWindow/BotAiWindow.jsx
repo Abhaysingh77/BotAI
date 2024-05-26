@@ -11,16 +11,54 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Style from "../BotAiWindow/BotAiWindow.module.css";
 import { TbEdit } from "react-icons/tb";
+import { data } from "../../assets/data";
 
 const drawerWidth = 200;
 
 function BotAiWindow(props) {
-  const askQuestion = () => {};
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [chat, setChat] = React.useState([]);
-  const [question, setQuestion] = React.useState([]);
+  const [ques, setQues] = React.useState("");
+  const idRef = React.useRef(0);
+  console.log(data);
+
+  const askQuestion = () => {
+    let date = new Date();
+    let time = date.toLocaleString("en-us", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
+    let obj = {
+      question: ques,
+      id: idRef.current,
+      time: time,
+    };
+    idRef.current++;
+    setQues("");
+    setChat((prev) => [obj, ...prev]);
+
+    let timeout = setTimeout(() => {
+      const ans = data.find((item) => item.question.toLowerCase() === ques.toLowerCase());
+
+      if (ans) {
+        let ansObj = {
+          answer: ans.response,
+          id: idRef.current,
+          time: time,
+        };
+        idRef.current++;
+        setChat((prev) => [ansObj, ...prev]);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  };
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -41,9 +79,7 @@ function BotAiWindow(props) {
     <div>
       <Toolbar className={Style.logoSection}>
         <div className={Style.logo}></div>
-        <div style={{ fontFamily: "Ubuntu", fontWeight: 600, fontSize: "18px" }}>
-          New chat
-        </div>
+        <div style={{ fontFamily: "Ubuntu", fontWeight: 600, fontSize: "18px" }}>New chat</div>
         <TbEdit size={25} cursor="pointer" />
       </Toolbar>
       <Divider />
@@ -51,7 +87,6 @@ function BotAiWindow(props) {
     </div>
   );
 
-  // Remove this const when copying and pasting into your project.
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
@@ -98,7 +133,7 @@ function BotAiWindow(props) {
           onTransitionEnd={handleDrawerTransitionEnd}
           onClose={handleDrawerClose}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
@@ -130,10 +165,10 @@ function BotAiWindow(props) {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          position: 'relative', // Ensure positioning context for children
+          position: "relative",
         }}
       >
-        {question.length ? (
+        {chat.length <= 0 ? (
           <Box
             position="fixed"
             sx={{
@@ -144,23 +179,30 @@ function BotAiWindow(props) {
             }}
           >
             <h2>How Can I Help You Today?</h2>
-            <div
-              style={{ width: "50px", height: "50px" }}
-              className={Style.logo}
-            ></div>
+            <div style={{ width: "50px", height: "50px" }} className={Style.logo}></div>
           </Box>
         ) : (
           <Box
+            className={Style.chatBox}
             sx={{
-              position: 'fixed',
+              position: "fixed",
               fontFamily: "Ubuntu",
-              width: '70%',
-              height: '80%', // Make sure the box takes the full height of its container
-              ml: 5,
-              backgroundColor: 'blue',
+              width: "70%",
+              height: "80%",
+              ml: 2,
+              bottom: 65,
             }}
           >
-            <div className={Style.card}></div>
+            {chat.map((item) => (
+              <div className={Style.card} key={item.id}>
+                <div className={item.question ? Style.you : Style.chatLogo}></div>
+                <div className={Style.content}>
+                  <p>{item.question ? "You" : "BotAI"}</p>
+                  <p>{item.question || item.answer}</p>
+                  <p>{item.time}</p>
+                </div>
+              </div>
+            ))}
           </Box>
         )}
         <Box
@@ -168,8 +210,14 @@ function BotAiWindow(props) {
           sx={{ bottom: 10, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
           className={Style.inputContainer}
         >
-          <input type="text" name="" id="" value={question} />{" "}
-          <button onClick={askQuestion}>Ask</button> <button>Save</button>
+          <input
+            type="text"
+            value={ques}
+            onChange={(e) => setQues(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && askQuestion(e)}
+          />
+          <button onClick={askQuestion}>Ask</button>
+          <button>Save</button>
         </Box>
       </Box>
     </Box>

@@ -1,5 +1,3 @@
-/* BotAiWindow.module.css */
-
 .logo {
   display: inline-block;
   width: 40px;
@@ -71,7 +69,7 @@
 }
 
 .inputContainer input {
-  width: 60vw;
+  width: 70vw;
   height: 6vh;
   border: 1px solid #00000073;
   border-radius: 5px;
@@ -88,10 +86,65 @@
   cursor: pointer;
 }
 
+.chatBox {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: auto;
+}
+
+.chatBox::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+}
 .card {
+  width: 100%;
+  height: auto;
+  background: #a995cd21;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px 1px lightblue;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.content{
   width: 80%;
-  height: 20%;
-  background: #d7c7f421;
-  position: absolute;
-  bottom: 0; 
+  height: 100%;
+}
+.content p:nth-child(1) {
+  margin-bottom: -20px;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.content p:nth-child(3) {
+  margin-top: -10px;
+  font-size: small;
+}
+.you {
+  display: inline-block;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1.75rem;
+  background-image: url("../../assets/images/you.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: var(--primary-font);
+  cursor: pointer;
+  margin: 10px;
+}
+
+.chatLogo {
+  display: inline-block;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1.75rem;
+  background-image: url("../../assets/images/logo.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: var(--primary-font);
+  cursor: pointer;
+  margin: 10px;
 }
