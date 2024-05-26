@@ -127,7 +127,7 @@ function BotAiWindow(props) {
         >
           New chat
         </div>
-        <TbEdit size={25} cursor="pointer" onClick={handleSave}/>
+        <TbEdit size={25} cursor="pointer" onClick={handleSave} />
       </Toolbar>
       <Divider />
       <div className={Style.past}>
@@ -135,7 +135,13 @@ function BotAiWindow(props) {
           Past Conversations
         </Typography>
         {showPastConversations && (
-          <ul style={{listStyle:'none', float:'left', marginInlineStart:'-30px'}}>
+          <ul
+            style={{
+              listStyle: "none",
+              float: "left",
+              marginInlineStart: "-30px",
+            }}
+          >
             {conversations.map((conv, index) => (
               <li key={index}>
                 <Typography
@@ -175,7 +181,7 @@ function BotAiWindow(props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon sx={{color:"#9785BA"}}/>
+            <MenuIcon sx={{ color: "#9785BA" }} />
           </IconButton>
           <Typography
             variant="h6"
@@ -236,21 +242,40 @@ function BotAiWindow(props) {
         }}
       >
         {chat.length <= 0 ? (
-          <Box
-            position="fixed"
-            sx={{
-              fontFamily: "Ubuntu",
-              textAlign: "center",
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              mt: 7,
-            }}
-          >
-            <h2>How Can I Help You Today?</h2>
-            <div
-              style={{ width: "50px", height: "50px" }}
-              className={Style.logo}
-            ></div>
-          </Box>
+          <>
+            <Box
+              style={{
+                position: "relative",
+                top: 50,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <h2>How Can I Help You Today?</h2>
+              <div
+                style={{ width: "50px", height: "50px" }}
+                className={Style.logo}
+              ></div>
+            </Box>
+
+            <div className={Style.dummyCardContainer}>
+              <div className={Style.dummyCard}>
+                Start by saying <i>Hi</i> or <i>Hello</i> <br />
+                <small>Get AI generated response</small>
+              </div>
+              <div className={Style.dummyCard}>
+                Ask <i>What's the importance of responsive design?</i> <br />
+                <small>Get AI generated response</small>
+              </div>
+              <div className={Style.dummyCard}>
+                Start by saying <i>Hi</i> or <i>Hello</i> <br />
+                <small>Get AI generated response</small>
+              </div>
+            </div>
+          </>
         ) : (
           <Box
             className={Style.chatBox}
