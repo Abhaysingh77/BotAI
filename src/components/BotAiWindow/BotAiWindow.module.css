@@ -117,9 +117,10 @@
   font-size: larger;
 }
 
-.content p:nth-child(3) {
+.content .time {
   margin-top: -10px;
-  font-size: small;
+  font-size: medium;
+  margin-right: 5px;
 }
 .you {
   display: inline-block;

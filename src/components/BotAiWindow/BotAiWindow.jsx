@@ -1,16 +1,21 @@
-import * as React from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Style from "../BotAiWindow/BotAiWindow.module.css";
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  Toolbar,
+  Typography,
+  Rating,
+} from "@mui/material";
+import { Menu as MenuIcon } from "@mui/icons-material";
 import { TbEdit } from "react-icons/tb";
+import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
+import Style from "../BotAiWindow/BotAiWindow.module.css";
+import FeedbackModal from "../Feedback/FeedbackModal";
 import { data } from "../../assets/data";
 
 const drawerWidth = 200;
@@ -22,7 +27,15 @@ function BotAiWindow(props) {
   const [chat, setChat] = React.useState([]);
   const [ques, setQues] = React.useState("");
   const idRef = React.useRef(0);
-  console.log(data);
+  const [hoveredCardId, setHoveredCardId] = React.useState(null);
+  const [isHover, setIsHover] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState({});
+  const [showStarRating, setShowStarRating] = React.useState({});
+  const [showFeedback, setShowFeedback] = React.useState({});
+  const [conversations, setConversations] = React.useState([]);
+  const [showPastConversations, setShowPastConversations] =
+    React.useState(false);
 
   const askQuestion = () => {
     let date = new Date();
@@ -42,7 +55,9 @@ function BotAiWindow(props) {
     setChat((prev) => [obj, ...prev]);
 
     let timeout = setTimeout(() => {
-      const ans = data.find((item) => item.question.toLowerCase() === ques.toLowerCase());
+      const ans = data.find(
+        (item) => item.question.toLowerCase() === ques.toLowerCase()
+      );
 
       if (ans) {
         let ansObj = {
@@ -75,19 +90,71 @@ function BotAiWindow(props) {
     }
   };
 
+  const handleMouseEnter = (id) => {
+    setHoveredCardId(id);
+    setIsHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredCardId(null);
+    setIsHover(false);
+  };
+
+  const handleModal = (id) => {
+    setOpen(true);
+    setHoveredCardId(id);
+  };
+
+  const showRating = (id) => {
+    setShowStarRating((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleSave = () => {
+    setConversations((prev) => [...prev, chat]);
+    setChat([]);
+  };
+
+  const togglePastConversations = () => {
+    setShowPastConversations((prev) => !prev);
+  };
+
   const drawer = (
     <div>
       <Toolbar className={Style.logoSection}>
         <div className={Style.logo}></div>
-        <div style={{ fontFamily: "Ubuntu", fontWeight: 600, fontSize: "18px" }}>New chat</div>
+        <div
+          style={{ fontFamily: "Ubuntu", fontWeight: 600, fontSize: "18px" }}
+        >
+          New chat
+        </div>
         <TbEdit size={25} cursor="pointer" />
       </Toolbar>
       <Divider />
-      <div className={Style.past}>Past Conversation</div>
+      <div className={Style.past}>
+        <Typography onClick={togglePastConversations}>
+          Past Conversations
+        </Typography>
+        {showPastConversations && (
+          <ul style={{listStyle:'none', float:'left', marginInlineStart:'-30px'}}>
+            {conversations.map((conv, index) => (
+              <li key={index}>
+                <Typography
+                  variant="subtitle"
+                  onClick={() => setChat(conv)}
+                  style={{ cursor: "pointer" }}
+                >
+                  Conversation {index + 1}
+                </Typography>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: "flex" }} className={Style.box}>
@@ -179,7 +246,10 @@ function BotAiWindow(props) {
             }}
           >
             <h2>How Can I Help You Today?</h2>
-            <div style={{ width: "50px", height: "50px" }} className={Style.logo}></div>
+            <div
+              style={{ width: "50px", height: "50px" }}
+              className={Style.logo}
+            ></div>
           </Box>
         ) : (
           <Box
@@ -187,22 +257,66 @@ function BotAiWindow(props) {
             sx={{
               position: "fixed",
               fontFamily: "Ubuntu",
-              width: "70%",
+              width: "77.5%",
               height: "80%",
               ml: 2,
               bottom: 65,
             }}
           >
             {chat.map((item) => (
-              <div className={Style.card} key={item.id}>
-                <div className={item.question ? Style.you : Style.chatLogo}></div>
+              <div
+                className={Style.card}
+                key={item.id}
+                onMouseEnter={() => handleMouseEnter(item.id)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div
+                  className={item.question ? Style.you : Style.chatLogo}
+                ></div>
                 <div className={Style.content}>
                   <p>{item.question ? "You" : "BotAI"}</p>
                   <p>{item.question || item.answer}</p>
-                  <p>{item.time}</p>
+                  <span className={Style.time}>{item.time}</span>
+                  {!item.question && isHover && item.id === hoveredCardId && (
+                    <span>
+                      <FiThumbsUp
+                        style={{ marginLeft: "10px", cursor: "pointer" }}
+                        onClick={() => showRating(item.id)}
+                      />
+                      <FiThumbsDown
+                        style={{ marginLeft: "10px", cursor: "pointer" }}
+                        onClick={() => handleModal(item.id)}
+                      />
+                    </span>
+                  )}
+                  {!item.question && showStarRating[item.id] && (
+                    <div>
+                      <Rating
+                        name={`star-rating-${item.id}`}
+                        value={value[item.id] || 0}
+                        onChange={(event, newValue) => {
+                          setValue((prev) => ({
+                            ...prev,
+                            [item.id]: newValue,
+                          }));
+                        }}
+                      />
+                    </div>
+                  )}
+                  {!item.question && showFeedback[item.id] && (
+                    <Typography className={Style.feedback}>
+                      <b>Feedback:</b> {showFeedback[item.id]}
+                    </Typography>
+                  )}
                 </div>
               </div>
             ))}
+            <FeedbackModal
+              open={open}
+              setOpen={setOpen}
+              setShowFeedback={setShowFeedback}
+              hoveredCardId={hoveredCardId}
+            />
           </Box>
         )}
         <Box
@@ -214,10 +328,10 @@ function BotAiWindow(props) {
             type="text"
             value={ques}
             onChange={(e) => setQues(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && askQuestion(e)}
+            onKeyDown={(e) => e.key === "Enter" && askQuestion()}
           />
           <button onClick={askQuestion}>Ask</button>
-          <button>Save</button>
+          <button onClick={handleSave}>Save</button>
         </Box>
       </Box>
     </Box>
