@@ -267,7 +267,7 @@ function BotAiWindow(props) {
                 <small>Get AI generated response</small>
               </div>
               <div className={Style.dummyCard}>
-                Ask <i>What's the importance of responsive design?</i> <br />
+                Ask <i>What is the importance of responsive design?</i> <br />
                 <small>Get AI generated response</small>
               </div>
               <div className={Style.dummyCard}>
